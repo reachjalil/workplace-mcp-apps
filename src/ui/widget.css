@@ -1,0 +1,27 @@
+html, body { margin: 0; padding: 0; background: transparent; }
+#root { display: flow-root; width: 100%; }
+.embedded-view { display: flow-root; width: 100%; min-width: 0; }
+.embedded-view .workplace-widget { padding-block: calc(var(--card-padding) - 6px); box-shadow: 0 1px 3px #25385a04; }
+.widget-runtime { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 2px 5px 0; min-width: 0; }
+.widget-runtime-label { display: inline-flex; align-items: center; gap: 5px; min-width: 0; color: var(--wp-muted); font-size: 8px; line-height: 16px; }
+.runtime-dot { width: 4px; height: 4px; flex: 0 0 4px; border-radius: 50%; background: var(--wp-faint); }
+.runtime-dot.is-live { background: var(--wp-teal); }
+.widget-runtime-actions { display: flex; align-items: center; flex-shrink: 0; }
+.workplace .widget-runtime-actions button { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 22px; border-radius: 5px; color: var(--wp-muted); }
+.workplace .widget-runtime-actions button:hover:not(:disabled) { background: var(--wp-soft); color: var(--wp-accent-ink); }
+.widget-error { display: flex; align-items: flex-start; gap: 6px; padding: 8px 9px; margin-top: 5px; border: 1px solid color-mix(in srgb, var(--wp-amber) 20%, var(--wp-line)); border-radius: 8px; color: var(--wp-amber); background: var(--wp-amber-soft); font-size: 10px; line-height: 17px; }
+.widget-error > svg { margin-top: 2px; }
+.widget-error > span { flex: 1; }
+.widget-error .text-button { color: var(--wp-amber); }
+.widget-placeholder { border: 1px solid var(--wp-line); background: var(--wp-surface); border-radius: 18px; padding: 24px; }
+.placeholder-icon { display: inline-flex; align-items: center; justify-content: center; width: 38px; height: 38px; border-radius: 11px; background: var(--wp-accent-soft); color: var(--wp-accent); }
+.workplace .widget-placeholder h1 { font-size: 15px; line-height: 22px; font-weight: 600; letter-spacing: -.025em; margin-top: 14px; }
+.workplace .widget-placeholder p { font-size: 11px; line-height: 19px; color: var(--wp-muted); margin-top: 5px; }
+.placeholder-caption { display: flex; align-items: center; gap: 5px; color: var(--wp-faint); font-size: 9px; line-height: 17px; margin-top: 16px; }
+.placeholder-lines { display: flex; flex-direction: column; gap: 8px; padding-top: 20px; }
+.placeholder-lines > span { display: block; height: 7px; border-radius: 4px; background: var(--wp-subtle); }
+.placeholder-lines > span:nth-child(2) { width: 85%; }
+.placeholder-lines > span:nth-child(3) { width: 62%; }
+.runtime-spinner { animation: runtime-spin 1s linear infinite; }
+@keyframes runtime-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .runtime-spinner { animation: none; } }

@@ -1,0 +1,14 @@
+.git/
+.github/
+node_modules/
+.test-host/
+test-results/
+playwright-report/
+coverage/
+tests/
+playwright.config.ts
+vitest.config.ts
+scripts/build-test-host.ts
+.env
+.env.*
+*.log

@@ -1,0 +1,46 @@
+{
+  "name": "workplace-mcp-apps",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Eight configurable workplace dashboard widgets served by one standard MCP server. Synthetic data, real MCP Apps, ready for Vercel.",
+  "type": "module",
+  "license": "MIT",
+  "engines": { "node": "24.x" },
+  "packageManager": "pnpm@10.28.0",
+  "scripts": {
+    "dev": "pnpm build && tsx scripts/dev.ts",
+    "build": "tsx scripts/build.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:browser": "playwright test",
+    "check": "pnpm typecheck && pnpm test && pnpm build && pnpm test:browser"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/server": "2.0.0",
+    "hono": "4.13.7",
+    "mcp-handler": "2.1.1",
+    "zod": "4.4.3"
+  },
+  "devDependencies": {
+    "@hono/node-server": "2.1.1",
+    "@modelcontextprotocol/ext-apps": "1.7.5",
+    "@modelcontextprotocol/sdk": "1.30.0",
+    "@playwright/test": "1.62.1",
+    "@types/node": "24.13.3",
+    "@types/react": "19.2.18",
+    "@types/react-dom": "19.2.4",
+    "@vitejs/plugin-react": "4.7.0",
+    "lucide-react": "0.577.0",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "tsx": "4.23.12",
+    "typescript": "5.9.3",
+    "vite": "6.4.3",
+    "vite-plugin-singlefile": "2.3.3",
+    "vitest": "4.1.10"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": ["esbuild"],
+    "peerDependencyRules": { "ignoreMissing": ["next"] }
+  }
+}

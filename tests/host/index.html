@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" href="data:," />
+  <title>Workplace SDK test host</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; padding: 20px; font: 14px/1.5 system-ui, sans-serif; color: #243047; background: #f3f5f9; }
+    h1 { margin: 0; font-size: 22px; }
+    form { display: flex; flex-wrap: wrap; gap: 12px; align-items: end; padding: 16px 0; }
+    label { display: flex; flex-direction: column; gap: 4px; }
+    label:has(input[type=checkbox]) { flex-direction: row; align-items: center; }
+    select, button { padding: 8px; font: inherit; }
+    button { cursor: pointer; }
+    iframe { display: block; border: 0; width: 360px; height: 1px; }
+    pre { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 11px; }
+    #error { color: #a12727; }
+    #sdk-events { padding-left: 22px; font-family: monospace; font-size: 11px; }
+  </style>
+</head>
+<body>
+  <h1>Independent SDK host</h1>
+  <p>Synthetic local fixture. Not OpenWork host proof. No external services or writes.</p>
+  <button id="connect" type="button">Connect and discover</button>
+  <p id="status" role="status">Disconnected</p>
+  <p id="error" role="alert" hidden></p>
+  <form id="launch-form">
+    <label for="tool">Widget<select id="tool" disabled></select></label>
+    <label for="width">Iframe width<select id="width"><option>320</option><option selected>360</option><option>640</option></select></label>
+    <label for="theme">Host theme<select id="theme"><option>light</option><option>dark</option></select></label>
+    <label for="live"><input id="live" type="checkbox" />Live updates</label>
+    <label for="server-tools"><input id="server-tools" type="checkbox" checked />Allow widget server tools</label>
+    <button id="launch" type="submit" disabled>Launch widget</button>
+    <button id="close" type="button" disabled>Close widget</button>
+    <button id="check-source" type="button" disabled>Check sender isolation</button>
+  </form>
+  <p id="resource-status">Resource not read</p>
+  <p id="probe-status">Sender isolation not checked</p>
+  <div id="widget-container"></div>
+  <h2>SDK callback witness</h2>
+  <ol id="sdk-events" aria-label="SDK callback witness"></ol>
+  <h2>Resource verification</h2>
+  <pre id="resource-proof" aria-label="Resource verification"></pre>
+  <h2>Latest launch result</h2>
+  <pre id="launch-result" aria-label="Latest launch result"></pre>
+  <script type="module" src="./main.ts"></script>
+</body>
+</html>
