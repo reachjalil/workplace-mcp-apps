@@ -13,7 +13,9 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:browser": "playwright test",
-    "check": "pnpm typecheck && pnpm test && pnpm build && pnpm test:browser"
+    "smoke": "tsx scripts/smoke.ts",
+    "test:runtime": "tsc -p tsconfig.server.json && node scripts/check-runtime.mjs",
+    "check": "pnpm typecheck && pnpm test && pnpm build && pnpm test:runtime && pnpm test:browser"
   },
   "dependencies": {
     "@modelcontextprotocol/server": "2.0.0",

@@ -1,8 +1,8 @@
 import type { Hono } from "hono";
-import { defaultConfig, resourceUri, widgets } from "../shared/config";
-import { handleHttp, validateLocalOrigin } from "./http";
-import { createWorkplaceHandler, demoPolicy, serverInfo } from "./mcp";
-import { APP_MIME_TYPE, MAX_WIDGET_HTML_BYTES, readWidgetHtml, WidgetBundleError } from "./widget";
+import { defaultConfig, resourceUri, widgets } from "../shared/config.js";
+import { handleHttp, validateLocalOrigin } from "./http.js";
+import { createWorkplaceHandler, demoPolicy, serverInfo } from "./mcp.js";
+import { APP_MIME_TYPE, MAX_WIDGET_HTML_BYTES, readWidgetHtml, WidgetBundleError } from "./widget.js";
 
 export type WorkplaceOptions = {
   widgetHtmlPath?: string;

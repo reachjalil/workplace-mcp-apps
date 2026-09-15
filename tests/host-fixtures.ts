@@ -1,5 +1,5 @@
 import { test as base, expect, type FrameLocator, type Page, type Response } from "@playwright/test";
-import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
+import { CallToolResultSchema, type CallToolResult } from "@modelcontextprotocol/sdk/types.js";
 import { hostOrigin, widgetOrigin } from "./host-config";
 
 export type HttpWitness = {
@@ -91,8 +91,16 @@ export { expect };
 
 export async function openHost(page: Page, { tool, width = 360, live = false, readOnly = false }: { tool: string; width?: number; live?: boolean; readOnly?: boolean }) {
   await page.goto("/test-host/");
+  const initialization = page.waitForResponse(response => response.url() === `${hostOrigin}/mcp` && response.request().method() === "POST" && response.request().postDataJSON().method === "initialize", { timeout: 10000 });
   await page.getByRole("button", { name: "Connect and discover" }).click();
+  const initializeResponse = await initialization;
+  expect(initializeResponse.status()).toBe(200);
+  const initializeId = initializeResponse.request().postDataJSON().id;
+  expect(initializeId).toBe(0);
   await expect(page.locator("#status")).toHaveText("Connected: 9 tools / 8 resources");
+  const readInitializationReceipts = async () => (await page.locator('#sdk-events [data-event="mcp-response"]').allTextContents()).map(text => JSON.parse(text)).filter(receipt => receipt.id === initializeId);
+  const expectedInitializationReceipt = { event: "mcp-response", id: initializeId, received: true, isError: false };
+  await expect.poll(readInitializationReceipts, { timeout: 2000, message: "Connect must capture the actual initialize response receipt 0" }).toEqual([expectedInitializationReceipt]);
   await page.getByRole("combobox", { name: "Widget", exact: true }).selectOption(tool);
   await page.getByRole("combobox", { name: "Iframe width", exact: true }).selectOption(String(width));
   await page.getByLabel("Live updates", { exact: true }).setChecked(live);
@@ -101,6 +109,7 @@ export async function openHost(page: Page, { tool, width = 360, live = false, re
   await page.getByRole("button", { name: "Launch widget", exact: true }).click();
   const response = await documentResponse;
   await expect(page.locator("#status")).toHaveText(`Rendered ${tool}`);
+  await expect.poll(readInitializationReceipts, { timeout: 2000, message: "Launch must retain initialize receipt 0 for the final request-failure check" }).toEqual([expectedInitializationReceipt]);
   await expect(page.locator("#error")).toBeHidden();
   await expect(page.locator("#resource-status")).toContainText("Verified resources/read matches isolated /widget");
   const frame = page.frameLocator('iframe[title="Workplace MCP App"]');
@@ -138,17 +147,22 @@ export async function expectNoOverflow(target: Page | FrameLocator) {
   }), { message: "No document or iframe horizontal overflow" }).toBeLessThanOrEqual(1);
 }
 
-export async function readToolResponse(response: Response): Promise<CallToolResult> {
+export async function readToolResponse(page: Page, response: Response): Promise<CallToolResult> {
   expect(response.status()).toBe(200);
-  const text = await response.text();
-  const messages = text.trim().startsWith("{") ? [JSON.parse(text)] : text.split(/\r?\n\r?\n/).flatMap(event => {
-    const data = event.split(/\r?\n/).filter(line => line.startsWith("data:")).map(line => line.slice(5).trim()).join("\n");
-    return data ? [JSON.parse(data)] : [];
-  });
-  const message = messages.find(message => message.jsonrpc === "2.0" && message.result);
-  expect(message, "Actual HTTP MCP response contains a result").toBeDefined();
-  expect(message.result.isError).not.toBe(true);
-  return message.result;
+  expect(response.url()).toBe(`${hostOrigin}/mcp`);
+  const request = response.request().postDataJSON();
+  expect(request.method).toBe("tools/call");
+  expect(request.id).toBeDefined();
+  let receipts: Array<{ received: boolean; isError: boolean; result?: unknown }> = [];
+  await expect.poll(async () => {
+    receipts = (await page.locator('#sdk-events [data-event="mcp-response"]').allTextContents()).map(text => JSON.parse(text)).filter(receipt => receipt.id === request.id);
+    return receipts.length;
+  }, { timeout: 2000, message: "The actual SDK must retain exactly one result matching the HTTP tool request ID" }).toBe(1);
+  expect(receipts[0].received).toBe(true);
+  expect(receipts[0].isError).toBe(false);
+  const result = CallToolResultSchema.parse(receipts[0].result);
+  expect(result.isError).not.toBe(true);
+  return result;
 }
 
 export function nextToolResponse(page: Page, name: string) {

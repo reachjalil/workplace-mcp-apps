@@ -1,9 +1,9 @@
 import { createMcpHandler } from "mcp-handler";
 import { z } from "zod";
-import packageJson from "../../package.json";
-import { configSchema, resourceUri, widgets, widgetSchema, type WidgetId } from "../shared/config";
-import { createSnapshot, snapshotSchema, type Snapshot } from "../shared/data";
-import { APP_MIME_TYPE } from "./widget";
+import packageJson from "../../package.json" with { type: "json" };
+import { configSchema, resourceUri, widgets, widgetSchema, type WidgetId } from "../shared/config.js";
+import { createSnapshot, snapshotSchema, type Snapshot } from "../shared/data.js";
+import { APP_MIME_TYPE } from "./widget.js";
 
 export const serverInfo = { name: packageJson.name, version: packageJson.version };
 export const MAX_SNAPSHOT_STEP = 9999;

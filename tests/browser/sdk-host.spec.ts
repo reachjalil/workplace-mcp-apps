@@ -82,7 +82,7 @@ test("Next demo moment uses the actual helper and changes current goal progress,
   const started = performance.now();
   const next = nextToolResponse(page, "get_workplace_snapshot");
   await frame.getByRole("button", { name: "Next demo moment", exact: true }).click();
-  const result = await readToolResponse(await next);
+  const result = await readToolResponse(page, await next);
   expect(result.structuredContent).toMatchObject({ widget: "goals", demo: true, revision: 1, moment: 1, config: { live: false, seed: 0 }, goals: { percent: 73 } });
   await expect(frame.getByRole("img", { name: "73% goal progress", exact: true })).toBeVisible();
   await expect(frame.locator(".goal-ring strong")).toHaveText("73%");
@@ -91,7 +91,7 @@ test("Next demo moment uses the actual helper and changes current goal progress,
   expect(traffic.calls("get_workplace_snapshot")[0]).toMatchObject({ mainFrame: true, frameUrl: `${hostOrigin}/test-host/`, rpc: { method: "tools/call", params: { name: "get_workplace_snapshot", arguments: { widget: "goals", step: 1, config: { live: false, seed: 0, refreshSeconds: 15 } } } } });
   const refresh = nextToolResponse(page, "get_workplace_snapshot");
   await frame.getByRole("button", { name: "Refresh snapshot", exact: true }).click();
-  expect((await readToolResponse(await refresh)).structuredContent).toMatchObject({ moment: 1, goals: { percent: 73 } });
+  expect((await readToolResponse(page, await refresh)).structuredContent).toMatchObject({ moment: 1, goals: { percent: 73 } });
   await expect(frame.getByRole("img", { name: "73% goal progress", exact: true })).toBeVisible();
   await page.clock.fastForward(45000);
   expect(traffic.calls("get_workplace_snapshot")).toHaveLength(2);

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { configSchema, widgetSchema, type DemoConfigInput, type WidgetId } from "./config";
+import { configSchema, widgetSchema, type DemoConfigInput, type WidgetId } from "./config.js";
 
 const meetingSchema = z.object({ id: z.string(), time: z.string(), title: z.string(), detail: z.string(), kind: z.enum(["meeting", "focus", "break"]), minutes: z.number() });
 const attentionSchema = z.object({ id: z.string(), title: z.string(), detail: z.string(), category: z.enum(["critical", "due", "review"]), area: z.string(), age: z.string() });

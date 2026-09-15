@@ -153,9 +153,11 @@ This example is intentionally **not** a production employee portal or OAuth impl
 pnpm typecheck
 pnpm test
 pnpm build
+pnpm test:runtime                      # plain Node import of emitted server, without a TypeScript loader
 pnpm exec playwright install chromium   # first time, if no Chrome/cached Chromium
 pnpm test:browser
 pnpm audit --prod --audit-level high
+pnpm smoke https://your-project.vercel.app  # after deployment; compares resource bytes to your local build
 ```
 
 Tests cover validation, deterministic demo moments, real HTTP MCP negotiation/tool calls/resources, three-/one-column layout, light/dark rendering, config export, local-only interactions, and a separate-origin MCP Apps SDK host with real tool refresh and height notifications. They are **not a claim of full OpenWork or every third-party host certification**.

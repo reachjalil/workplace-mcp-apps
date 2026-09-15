@@ -2,6 +2,7 @@
 .github/
 node_modules/
 .test-host/
+.server/
 test-results/
 playwright-report/
 coverage/

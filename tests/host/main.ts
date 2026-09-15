@@ -58,12 +58,15 @@ connectButton.addEventListener("click", () => {
   connectButton.disabled = true;
   void (async () => {
     const transport = new StreamableHTTPClientTransport(new URL("/mcp", location.origin));
-    await client.connect(transport, { timeout: 10000 });
-    const receive = transport.onmessage;
     transport.onmessage = message => {
-      receive?.(message);
-      if ("result" in message) witness("mcp-response", { id: message.id, received: true, isError: message.result.isError === true });
+      if ("result" in message) witness("mcp-response", {
+        id: message.id,
+        received: true,
+        isError: message.result.isError === true,
+        ...("structuredContent" in message.result ? { result: message.result } : {}),
+      });
     };
+    await client.connect(transport, { timeout: 10000 });
     const [toolList, resourceList] = await Promise.all([client.listTools(), client.listResources()]);
     tools = toolList.tools;
     for (const tool of tools.filter(tool => getToolUiResourceUri(tool))) {
