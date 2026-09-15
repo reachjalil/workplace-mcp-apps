@@ -16,6 +16,16 @@ assert.equal(response.status, 200, "Public health check must succeed without aut
 const health = await response.json();
 assert.equal(health.status, "ok");
 assert.equal(health.widgetCount, 8);
+const page = await fetch(origin, { signal: AbortSignal.timeout(15000) });
+assert.equal(page.status, 200, "Public showcase must render without authentication");
+const html = await page.text();
+const assets = [...html.matchAll(/(?:src|href)="(\/assets\/[^"]+)"/g)].map(match => match[1]);
+assert(assets.length >= 2);
+for (const path of assets) {
+  const asset = await fetch(new URL(path, origin), { signal: AbortSignal.timeout(15000) });
+  assert.equal(asset.status, 200, `Missing deployed asset ${path}`);
+  assert((await asset.text()).length > 0);
+}
 const client = new Client({ name: "workplace-deployment-check", version: "1.0.0" });
 const transport = new StreamableHTTPClientTransport(new URL("/mcp", origin));
 const digest = (text: string) => createHash("sha256").update(text).digest("hex");
@@ -39,7 +49,7 @@ try {
   }
   const [first, next] = await Promise.all([0, 1].map(step => client.callTool({ name: "get_workplace_snapshot", arguments: { widget: "goals", config: { live: false, seed: 0 }, step } })));
   assert.equal(snapshotSchema.parse(next.structuredContent).goals.percent, snapshotSchema.parse(first.structuredContent).goals.percent + 1);
-  console.info(JSON.stringify({ origin: origin.origin, status: "passed", launchTools: 8, resources: 8, dynamicHelper: true, resourceSha256: expectedHash }, null, 2));
+  console.info(JSON.stringify({ origin: origin.origin, status: "passed", showcase: true, assets: assets.length, launchTools: 8, resources: 8, dynamicHelper: true, resourceSha256: expectedHash }, null, 2));
 } finally {
   await client.close();
 }

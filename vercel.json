@@ -16,7 +16,7 @@
   "functions": {
     "app.ts": {
       "maxDuration": 30,
-      "includeFiles": "generated/widget.html"
+      "includeFiles": "{generated/widget.html,public/**}"
     }
   }
 }

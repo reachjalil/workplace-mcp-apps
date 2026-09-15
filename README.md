@@ -112,7 +112,7 @@ vercel --prod
 
 Your new endpoint is `https://<your-project>.vercel.app/mcp`. The **Copy MCP URL** button derives this from the page's own origin, so it automatically works on your deployment.
 
-`vercel.json` includes `generated/widget.html` in the function. Keep that setting: the static showcase alone is not an MCP App deployment. `public/` and `generated/` are dedicated generated outputs; the build replaces them. Do not put hand-maintained files there.
+`vercel.json` includes `generated/widget.html` and the generated `public/` assets in the function. Keep that setting: the static showcase alone is not an MCP App deployment. Hono serves an explicit fallback for the page and content-hashed assets, with CDN cache headers, because Vercel may inventory static files before the build creates them. `public/` and `generated/` are dedicated generated outputs; the build replaces them. Do not put hand-maintained files there.
 
 For a public demo, ensure Vercel deployment protection is not blocking the **production** endpoint. Preview deployments can remain protected. Choose your own plan/budgets; public anonymous requests still consume hosting resources. No firewall bypass token belongs in this repository or a connector URL.
 
