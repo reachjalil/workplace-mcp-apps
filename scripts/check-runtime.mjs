@@ -10,6 +10,7 @@ assert.equal(health.widgetCount, 8);
 const page = await app.request("http://localhost/");
 assert.equal(page.status, 200, "Showcase must be available without dev-only static middleware");
 const html = await page.text();
+assert.match(html, /rel="icon" href="data:image\/svg\+xml,/);
 const assets = [...html.matchAll(/(?:src|href)="(\/assets\/[^"]+)"/g)].map(match => match[1]);
 assert(assets.length >= 2, "Showcase must link its JavaScript and CSS");
 for (const path of assets) {
